@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Vedic Mathematics vs Modern Mathematics Multiplication Benchmarking Dashboard. Compare execution time, memory usage, and step-by-step algorithms.">
+    <title>Vedic vs Modern Maths Multiplication Benchmarker</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons for premium UI look -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Chart.js for beautiful charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="glow-bg"></div>
+    <div class="glow-bg-secondary"></div>
+    
+    <header class="app-header">
+        <div class="logo-area">
+            <i data-lucide="calculator" class="logo-icon"></i>
+            <h1>VeloLab's Multiplication Engine</h1>
+        </div>
+        <p class="subtitle">A Deep Visual and Computational Comparison of Vedic & Modern Arithmetic Algorithms</p>
+    </header>
+
+    <main class="dashboard-container">
+        <!-- Input Panel -->
+        <section class="glass-card input-panel">
+            <h2 class="panel-title"><i data-lucide="sliders"></i> Arithmetic Configurations</h2>
+            
+            <div class="input-groups">
+                <div class="input-field-wrapper">
+                    <label for="num1-input">Multiplicand (Number 1)</label>
+                    <textarea id="num1-input" placeholder="Enter an integer or generate one below..." rows="3"></textarea>
+                    <span class="digit-counter" id="num1-counter">0 digits</span>
+                </div>
+                <div class="input-field-wrapper">
+                    <label for="num2-input">Multiplier (Number 2)</label>
+                    <textarea id="num2-input" placeholder="Enter an integer or generate one below..." rows="3"></textarea>
+                    <span class="digit-counter" id="num2-counter">0 digits</span>
+                </div>
+            </div>
+
+            <div class="generator-toolbar">
+                <div class="gen-group">
+                    <span class="toolbar-label">Generate Large Inputs:</span>
+                    <button class="btn btn-secondary" id="gen-random-btn" title="Generate random numbers of specified size">
+                        <i data-lucide="shuffle"></i> Random Digits
+                    </button>
+                    <button class="btn btn-secondary" id="gen-factorial-btn" title="Compute factorial of n and multiply by a random number">
+                        <i data-lucide="binary"></i> Factorial (n!)
+                    </button>
+                    <button class="btn btn-secondary" id="gen-nikhilam-btn" title="Generate numbers close to base for Nikhilam method">
+                        <i data-lucide="focus"></i> Nikhilam Pairs
+                    </button>
+                    <button class="btn btn-secondary" id="gen-ekadhikena-btn" title="Generate pairs for Ekadhikena method (prefix same, units sum to 10)">
+                        <i data-lucide="plus-circle"></i> Ekadhikena Pairs
+                    </button>
+                    <button class="btn btn-secondary" id="gen-ekanyunena-btn" title="Generate pairs for Ekanyunena method (one number is 9s)">
+                        <i data-lucide="minus-circle"></i> Ekanyunena Pairs
+                    </button>
+                    <input type="number" id="gen-size-val" value="10" min="1" max="5000" class="num-input" title="Size parameter for generator">
+                </div>
+                
+                <button class="btn btn-primary btn-large" id="calculate-btn">
+                    <i data-lucide="play"></i> Compare Algorithms
+                </button>
+            </div>
+        </section>
+
+        <!-- Tabs Navigation -->
+        <nav class="tab-navigation">
+            <button class="tab-btn active" id="tab-overview" data-target="panel-overview">
+                <i data-lucide="layout-grid"></i> Overview & Metrics
+            </button>
+            <button class="tab-btn" id="tab-visualizer" data-target="panel-visualizer">
+                <i data-lucide="eye"></i> Step-by-Step Visualizer
+            </button>
+            <button class="tab-btn" id="tab-benchmarks" data-target="panel-benchmarks">
+                <i data-lucide="trending-up"></i> Scaling Benchmarks
+            </button>
+        </nav>
+
+        <!-- View Content Panels -->
+        <div class="tab-content-container">
+            <!-- 1. Overview Panel -->
+            <div class="tab-panel active" id="panel-overview">
+                <!-- Info Legend Banner -->
+                <div class="glass-card legend-box" style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; padding: 1rem 1.25rem; border-left: 4px solid var(--vedic-color)">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <i data-lucide="info" style="color: var(--vedic-color); width: 24px; height: 24px;"></i>
+                        <div>
+                            <strong style="color: var(--text-primary); font-size: 0.95rem;">Performance & Scalability Indicators</strong>
+                            <p style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 0.15rem;">
+                                Metrics are compared against the standard <strong>Schoolbook Long Multiplication</strong> baseline.
+                            </p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 1.25rem; flex-wrap: wrap; font-size: 0.8rem;">
+                        <span style="display: inline-flex; align-items: center; gap: 0.25rem; color: #10b981; font-weight: 600;">
+                            <i data-lucide="arrow-down" style="width: 14px; height: 14px;"></i> Green Arrow (Lower / Efficient)
+                        </span>
+                        <span style="display: inline-flex; align-items: center; gap: 0.25rem; color: #ef4444; font-weight: 600;">
+                            <i data-lucide="arrow-up" style="width: 14px; height: 14px;"></i> Red Arrow (Higher / Slow)
+                        </span>
+                        <span style="display: inline-flex; align-items: center; gap: 0.25rem; color: #38bdf8; font-weight: 600;">
+                            <i data-lucide="gauge" style="width: 14px; height: 14px;"></i> Scalable (Best for Large scale)
+                        </span>
+                        <span style="display: inline-flex; align-items: center; gap: 0.25rem; color: #f59e0b; font-weight: 600;">
+                            <i data-lucide="layers" style="width: 14px; height: 14px;"></i> Small-scale (Low overhead)
+                        </span>
+                    </div>
+                </div>
+                <div class="metrics-grid" id="metrics-grid-container">
+                    <!-- Cards will be populated dynamically -->
+                    <div class="no-data-msg">
+                        <i data-lucide="arrow-up-circle"></i>
+                        <p>Configure and run the comparison above to view metrics.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Step Visualizer Panel -->
+            <div class="tab-panel" id="panel-visualizer">
+                <div class="visualizer-layout">
+                    <!-- Algorithm Selection -->
+                    <div class="glass-card viz-sidebar">
+                        <h3>Visualizer Modes</h3>
+                        <p class="sidebar-help">Select an algorithm to step through its multiplication logic visually (max size: 12 &times; 12 digits).</p>
+                        <div class="viz-selector">
+                            <button class="viz-mode-btn active" id="viz-mode-urdhva">
+                                <strong>Vedic: Urdhva Tiryakbhyam</strong>
+                                <span>Swami Bharati Krishna Tirtha Ji</span>
+                            </button>
+                            <button class="viz-mode-btn" id="viz-mode-schoolbook">
+                                <strong>Schoolbook Long</strong>
+                                <span>Modern Multiplication</span>
+                            </button>
+                            <button class="viz-mode-btn" id="viz-mode-nikhilam" disabled>
+                                <strong>Vedic: Nikhilam</strong>
+                                <span>Swami Bharati Krishna Tirtha Ji</span>
+                            </button>
+                            <button class="viz-mode-btn" id="viz-mode-ekadhikena" disabled>
+                                <strong>Vedic: Ekadhikena Purvena</strong>
+                                <span>Swami Bharati Krishna Tirtha Ji</span>
+                            </button>
+                            <button class="viz-mode-btn" id="viz-mode-ekanyunena" disabled>
+                                <strong>Vedic: Ekanyunena Purvena</strong>
+                                <span>Swami Bharati Krishna Tirtha Ji</span>
+                            </button>
+                            <button class="viz-mode-btn" id="viz-mode-kapatasandhi">
+                                <strong>Kapatasandhi (Lattice Grid)</strong>
+                                <span>Aryabhata / Sridharacharya</span>
+                            </button>
+                            <button class="viz-mode-btn" id="viz-mode-khanda">
+                                <strong>Khanda Ganita (Bhaskara II)</strong>
+                                <span>Distributive (Lilavati)</span>
+                            </button>
+                            <button class="viz-mode-btn" id="viz-mode-dp">
+                                <strong>Dynamic Programming</strong>
+                                <span>Suffix Tabulation (Bellman)</span>
+                            </button>
+                            <button class="viz-mode-btn" id="viz-mode-fft">
+                                <strong>FFT Multiplication</strong>
+                                <span>Schönhage-Strassen Baseline</span>
+                            </button>
+                        </div>
+
+                        <div class="viz-controls">
+                            <button class="btn btn-secondary btn-icon" id="viz-start-btn" title="First Step"><i data-lucide="chevrons-left"></i></button>
+                            <button class="btn btn-secondary btn-icon" id="viz-prev-btn" title="Previous Step"><i data-lucide="chevron-left"></i></button>
+                            <button class="btn btn-primary btn-icon btn-round" id="viz-play-btn" title="Auto Play"><i data-lucide="play"></i></button>
+                            <button class="btn btn-secondary btn-icon" id="viz-next-btn" title="Next Step"><i data-lucide="chevron-right"></i></button>
+                            <button class="btn btn-secondary btn-icon" id="viz-end-btn" title="Last Step"><i data-lucide="chevrons-right"></i></button>
+                        </div>
+                        <div class="viz-progress-text">Step <span id="current-step-label">0</span> of <span id="total-steps-label">0</span></div>
+                    </div>
+
+                    <!-- Visualization Canvas Area -->
+                    <div class="glass-card viz-canvas-card">
+                        <div class="viz-canvas-header">
+                            <h3 id="viz-alg-title">Vedic Urdhva Tiryakbhyam</h3>
+                            <span class="status-badge" id="viz-suitability-badge">Visualizer Ready</span>
+                        </div>
+                        
+                        <!-- Drawing Area -->
+                        <div class="viz-board" id="viz-board">
+                            <!-- Visual elements will be rendered dynamically via JS (glowing paths, digits, carries) -->
+                            <div class="viz-placeholder">
+                                <i data-lucide="sparkles"></i>
+                                <p>Select inputs up to 12 digits and press "Compare Algorithms" to activate the step-by-step visualizer.</p>
+                            </div>
+                        </div>
+
+                        <!-- Mathematics commentary -->
+                        <div class="viz-commentary glass-card" id="viz-commentary">
+                            <div class="commentary-header"><i data-lucide="info"></i> Mathematical Operations</div>
+                            <div class="commentary-body" id="viz-commentary-text">
+                                No simulation active. Start by configuring numbers above.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Scaling Benchmarks Panel -->
+            <div class="tab-panel" id="panel-benchmarks">
+                <div class="benchmark-layout">
+                    <!-- Config Panel -->
+                    <section class="glass-card benchmark-config">
+                        <h3><i data-lucide="activity"></i> Scalability Testing Suite</h3>
+                        <p class="config-desc">Profile how multiplication algorithms scale as numbers grow from small to extremely large digit sizes.</p>
+                        
+                        <div class="bench-settings">
+                            <div class="form-group">
+                                <label for="bench-sizes-input">Digit Sizes to Benchmark (comma separated)</label>
+                                <input type="text" id="bench-sizes-input" placeholder="e.g. 10, 50, 100, 200, 500, 1000">
+                            </div>
+                            <div class="form-group check-group">
+                                <input type="checkbox" id="bench-nikhilam-check">
+                                <label for="bench-nikhilam-check">Use Nikhilam-Suitable Pairs (Base-aligned randoms)</label>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary btn-large btn-full" id="run-bench-btn">
+                            <i data-lucide="zap"></i> Run Scalability Benchmark
+                        </button>
+                    </section>
+
+                    <!-- Charts Area -->
+                    <div class="benchmark-results">
+                        <div class="glass-card chart-card">
+                            <h3><i data-lucide="clock"></i> Time Complexity (Execution Time in ms)</h3>
+                            <div class="chart-container">
+                                <canvas id="timeChart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="glass-card chart-card">
+                            <h3><i data-lucide="database"></i> Space Complexity (Peak Memory Usage in Bytes)</h3>
+                            <div class="chart-container">
+                                <canvas id="memoryChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="glass-card chart-card">
+                            <h3><i data-lucide="code-2"></i> Digit Operations (Multiplications, Additions & Writes)</h3>
+                            <div class="chart-container">
+                                <canvas id="opsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <p>Built with Vedic & Modern Arithmetic Engines | Powered by <a href="https://github.com/Tyagism/" target="_blank" rel="noopener noreferrer" style="color: var(--vedic-color); text-decoration: none; font-weight: 600;">VeloLabs by Harshit Tyagi</a></p>
+    </footer>
+
+    <!-- Modal for Large Result Display -->
+    <div class="modal" id="result-modal">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h3 id="modal-alg-name">Full Result</h3>
+                <button class="btn-close" id="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <textarea id="modal-result-textarea" readonly></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="modal-copy-btn"><i data-lucide="copy"></i> Copy Output</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script loading -->
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>
