@@ -19,10 +19,5 @@
     { "src": "/api/multiply", "dest": "/api/multiply.py" },
     { "src": "/api/bench", "dest": "/api/bench.py" },
     { "src": "/(.*)", "dest": "/public/$1" }
-  ],
-  "functions": {
-    "api/*.py": {
-      "maxDuration": 10
-    }
-  }
+  ]
 }
